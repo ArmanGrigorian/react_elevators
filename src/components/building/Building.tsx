@@ -1,16 +1,18 @@
 import { useState } from "react";
 import { levelsData } from "../../_DATA";
-import { setActiveLevel } from "../../utils";
+import { findClosest, setActiveLevel } from "../../utils";
 import Buttons from "../buttons/Buttons";
 import ElevatorBank from "../elevatorBank/ElevatorBank";
 import styles from "./building.module.scss";
 
+const INITIAL_LEVELS = {
+	a: setActiveLevel(levelsData, 1, "a"),
+	b: setActiveLevel(levelsData, 10, "b"),
+	c: setActiveLevel(levelsData, 20, "c"),
+};
+
 const Building = () => {
-	const [elevators, setElevators] = useState<Record<string, LevelsDataType>>({
-		a: setActiveLevel(levelsData, 1, "a"),
-		b: setActiveLevel(levelsData, 10, "b"),
-		c: setActiveLevel(levelsData, 20, "c"),
-	});
+	const [elevators, setElevators] = useState<Record<string, LevelsDataType>>(INITIAL_LEVELS);
 
 	const mySetter: MySetterType = {
 		a: (update) => setElevators((prev) => ({ ...prev, a: update(prev.a) })),
@@ -18,27 +20,17 @@ const Building = () => {
 		c: (update) => setElevators((prev) => ({ ...prev, c: update(prev.c) })),
 	};
 
-	function findClosest(level: number, ...gates: LevelsDataType[]): ElevatorType | undefined {
-		const result = gates
-			.flatMap((gate) =>
-				gate.data
-					.filter((val) => val.isActive && !val.isInUse)
-					.map((val) => ({
-						id: val.id,
-						distance: Math.abs(level - val.id),
-						gate: gate.name,
-					})),
-			)
-			.sort((a, b) => a.distance - b.distance)[0];
-
-		return result;
-	}
-
 	function handleCall(level: number, ...gates: LevelsDataType[]) {
 		const closest = findClosest(level, ...gates);
 
 		if (!closest) {
-			console.error("No closest elevator found");
+			console.warn("No closest gate found");
+			return;
+		}
+		const { gate, id } = closest;
+
+		if (id === level) {
+			console.log(`Elevator ${gate} is already at level ${level}`);
 			return;
 		}
 
@@ -64,9 +56,9 @@ const Building = () => {
 
 	return (
 		<div className={styles.building}>
-			<ElevatorBank gate={elevators.a} handleIsInUse={handleIsInUse} />
-			<ElevatorBank gate={elevators.b} handleIsInUse={handleIsInUse} />
-			<ElevatorBank gate={elevators.c} handleIsInUse={handleIsInUse} />
+			{Object.keys(elevators).map((key) => (
+				<ElevatorBank key={key} gate={elevators[key]} handleIsInUse={handleIsInUse} />
+			))}
 			<Buttons elevators={elevators} handleCall={handleCall} />
 		</div>
 	);
