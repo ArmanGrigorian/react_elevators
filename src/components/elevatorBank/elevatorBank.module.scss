@@ -1,0 +1,31 @@
+.levels {
+  border: 1px solid grey;
+  padding: 8px;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 8px;
+}
+
+.level {
+  position: relative;
+  border: 1px solid grey;
+  width: 32px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.active {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  z-index: 1;
+  width: 28px;
+  height: 36px;
+  background-color: green;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

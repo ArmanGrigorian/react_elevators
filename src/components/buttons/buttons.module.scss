@@ -1,0 +1,30 @@
+.buttons {
+  padding: 8px;
+  display: flex;
+  flex-direction: column-reverse;
+  border: 1px solid grey;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 26px;
+}
+
+.button {
+  width: 40px;
+  height: 24px;
+  text-align: center;
+  transition:
+    background-color 240ms ease-in-out,
+    color 240ms ease-in-out,
+    border-color 240ms ease-in-out;
+
+  &:hover {
+    background-color: green;
+    color: white;
+    border-color: green;
+  }
+
+  &:active {
+    scale: 0.9;
+  }
+}
